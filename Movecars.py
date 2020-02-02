@@ -48,8 +48,8 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         sensor_readings = []
         y = 0
         print("Sensor readings: ")  ###############input sensor readings with angles - spectrum - distance
-        for i in range(len(sensor_readings)):
-            sensor_readings[i] = int(input())
+        for i in range(len(sensor.angles)):
+            sensor_readings.append(int(input()))
 
         sensor_readings= [25,25,25,25,25,25,25,25,25,25,25,25,0,0,25,25,25,25,25]
 

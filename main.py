@@ -22,10 +22,10 @@ class settings:
         self.nbrOfTimeStepsToTimeout = self.timeout / self.dt
 
     def collison_value(self):
-        self.collision_distance = int(input())
+        self.collision_distance = int(input("Enter minimum distance for collision: "))
         if (self.collision_distance <0):
             while self.collision_distance <0:
-                self.collision_distance = int(input())
+                self.collision_distance = int(input("Enter minimum distance for collision: "))
 
 
 class  GenticAlgorithmSettings:
