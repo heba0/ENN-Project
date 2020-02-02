@@ -10,7 +10,8 @@ from Feedforward import Feedforward
 #  Prerequisites  Chromosomes,  Chromosomes_Fitness
 # Outputs  Fitness(standing vector: an element for each car)
 # Initializations
-def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVariance, Chromosomes_Fitness, Chromosomes, Network_Arch, unipolarBipolarSelector, collison_value):
+def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVariance, Chromosomes_Fitness, Chromosomes,
+             Network_Arch, unipolarBipolarSelector, collison_value):
     carLocations = env.start_points  # Car Initial Location[X, Y] in [Meters]
     carHeadings = env.start_headings  # Car Initial Heading Counter Clock Wise[Degrees]
     steerAngles = env.start_steerAngles  # [Degrees] Counter Clock Wise(Same for all cars)
@@ -25,7 +26,6 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
 
     Generation_ids = 0
     Chromosome_ids = 1
-    LifeTimes = 0  # In number of draw steps(multiple of GA.dt)
     timeStepsDone = 0
     prev_carLines = []
     BestFitnessChromoID = 1
@@ -41,23 +41,21 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         All_Chromosomes.append(l)
         All_Chromosomes_Fitness.append(l)
 
-
     # Iterating Generations
     while (1):
         # Move Car and Draw Environment - Get Sensor Readings and Collision State
+        LifeTimes = 0  # In number of draw steps(multiple of GA.dt)
         sensor_readings = []
         y = 0
         print("Sensor readings: ")  ###############input sensor readings with angles - spectrum - distance
         for i in range(len(sensor.angles)):
             sensor_readings.append(int(input()))
 
-        sensor_readings= [25,25,25,25,25,25,25,25,25,25,25,25,0,0,25,25,25,25,25]
-
         dist = min(sensor_readings)
         id = sensor_readings.index(dist)
 
         collison_bools = False
-        if dist<= collison_value:
+        if dist <= collison_value:
             collison_bools = True
         else:
             collison_bools = False
@@ -65,12 +63,11 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         timeStepsDone = timeStepsDone + 1
 
         # Increase lifetimes by 1
-        LifeTimes = LifeTimes + 1
-
 
         # Update Fitness
         Fitness = LifeTimes
-
+        LifeTimes = LifeTimes + 1
+        Fitness += 1
         # If car is almost in same place after nbrOfTimeStepsToTimeout has passed, set rotating_around_my_self_bool
         rotating_around_my_self_bool = 0
         if (LifeTimes >= nbrOfTimeStepsToTimeout):
@@ -95,8 +92,8 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
                 if var_x <= smallXYVariance and var_y <= smallXYVariance:
                     rotating_around_my_self_bool = 1
         else:
-            Old_Locations[LifeTimes-1][0] = carLocations[0]
-            Old_Locations[LifeTimes-1][1] = carLocations[1]
+            Old_Locations[LifeTimes - 1][0] = carLocations[0]
+            Old_Locations[LifeTimes - 1][1] = carLocations[1]
 
         if (collison_bools):
             if (Fitness > max(Chromosomes_Fitness)):
@@ -128,9 +125,9 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
                 Chromosome_ids = BestFitnessChromoID
             else:
                 # if (GA.replacement_option == 0)
-                All_Chromosomes[(i - 1) * GA.populationSize : i * GA.populationSize] = Chromosomes
+                All_Chromosomes[(i - 1) * GA.populationSize: i * GA.populationSize] = Chromosomes
                 x = 0
-                for i in range((i - 1) * GA.populationSize,i * GA.populationSize ):
+                for i in range((i - 1) * GA.populationSize, i * GA.populationSize):
                     All_Chromosomes_Fitness[i][y] = Chromosomes_Fitness[x]
                     x += 1
 
@@ -144,14 +141,14 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
 
                 tmp = Chromosomes_Fitness.copy()
                 idx = numpy.argsort(tmp, kind='mergesort', axis=0).tolist()[::-1]
-                idx2 = numpy.array(idx).tolist()[0:len(idx)-nbrOfParentsToKeep]
+                idx2 = numpy.array(idx).tolist()[0:len(idx) - nbrOfParentsToKeep]
                 Current_Chromosomes = []
                 Current_Fitness = []
                 for i in range(len(idx2)):
                     Current_Chromosomes.append(Chromosomes[idx2[i]])
                     Current_Fitness.append(Chromosomes_Fitness[idx2[i]])
 
-                Chromosomes_Childs =  []
+                Chromosomes_Childs = []
                 Chromosomes_Childs = ApplyGA(GA, Current_Chromosomes, Current_Fitness)
                 Chromosomes = []
                 for i in range(len(ParentsToKeep)):
@@ -162,7 +159,7 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
                 Chromosome_ids = 1
                 Generation_ids = Generation_ids + 1
                 for i in range(len(Chromosomes_Fitness)):
-                    Chromosomes_Fitness[i]= 0
+                    Chromosomes_Fitness[i] = 0
                 BestFitnessChromoID = 1
         current_chromosome = Chromosomes[Chromosome_ids]
 
@@ -188,4 +185,3 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
         print("Front Wheel: ", frontWheel)
         print("Back Wheel: ", backWheel)
         print("Steering Angles: ", steerAngles)
-
