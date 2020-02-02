@@ -35,13 +35,15 @@ def ApplyGA(GA, Chromosomes, Chromosomes_Fitness):  # Because number of chromoso
         for i in range(len(idx)):
             WinnersIdx.append(T[i][idx[i]])
     elif (GA.selection_option == 1):  # Truncation
-        V = sorted(Chromosomes_Fitness, 'descend')  # Sort fitness in ascending order
-        nbrOfSelections = round(
-            smallerPopulationSize * GA.truncation_percentage / 100)  # Number of selected chromosomes
-        V = V[1:nbrOfSelections]  # Winners Pool
+        tmp = Chromosomes_Fitness.copy()
+        V = numpy.argsort(tmp, kind='mergesort', axis=0).tolist()[::-1]
+        nbrOfSelections = round(smallerPopulationSize * GA.truncation_percentage / 100)  # Number of selected chromosomes
+        V = V[0:nbrOfSelections]  # Winners Pool
         x = rand(smallerPopulationSize, 1)
+        x = x.tolist()
+        WinnersIdx = []
         for i in range(len(x)):
-            WinnersIdx = V[round(x[i]) * (nbrOfSelections - 1) + 1]  # Winners Indeces
+            WinnersIdx.append(V[((round(x[i][0]) * (nbrOfSelections - 1)) + 1)%len(V)])  # Winners Indeces
 
     # Crossover
     all_parents = []
