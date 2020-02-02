@@ -22,14 +22,14 @@ def ApplyGA(GA, Chromosomes, Chromosomes_Fitness):  # Because number of chromoso
         for k in range(len(T)):
             l = []
             for i in range(len(T[k])):
-                T[k][i] = round(T[k][i])
-                l.append(Chromosomes_Fitness[T[k][i] - 1])
+                T[k][i] = round(T[k][i])% len(Chromosomes_Fitness)
+                l.append(Chromosomes_Fitness[T[k][i]])
             x.append(l)
         tmp = (numpy.array(x)).max(1)
         tmp = tmp.tolist()
         idx = []
         for i in range(len(tmp)):
-            idx.append(T[i].index(tmp[i]))
+            idx.append(x[i].index(tmp[i]))
         # Index to determine the winners
         WinnersIdx = []  # Winners Indeces
         for i in range(len(idx)):
@@ -46,20 +46,20 @@ def ApplyGA(GA, Chromosomes, Chromosomes_Fitness):  # Because number of chromoso
     # Crossover
     all_parents = []
     for i in range(len(WinnersIdx)):
-        all_parents.append(Chromosomes[WinnersIdx[i] - 1])
+        all_parents.append(Chromosomes[WinnersIdx[i]])
     x = rand(int(smallerPopulationSize / 2), 1)
     x = x.tolist()
     first_parents = []
     for i in range(len(x)):
         for j in range(len(x[i])):
-            x[i][j] = round(x[i][j] * (smallerPopulationSize - 1) + 1)
+            x[i][j] = round(x[i][j] * (smallerPopulationSize - 1) + 1) % len(x[i])
             first_parents.append(all_parents[x[i][j]])  # Random smallerPopulationSize / 2 Parents
     x = rand(int(smallerPopulationSize / 2), 1)
     x = x.tolist()
     second_parents = []
     for i in range(len(x)):
         for j in range(len(x[i])):
-            x[i][j] = round(x[i][j] * (smallerPopulationSize - 1) + 1)
+            x[i][j] = round(x[i][j] * (smallerPopulationSize - 1) + 1) % len(x[i])
             second_parents.append(all_parents[x[i][j]])  # Random smallerPopulationSize / 2 Parents
     references_matrix = []
     for j in range(int(smallerPopulationSize / 2)):
