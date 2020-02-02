@@ -138,7 +138,9 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
                 tmp = All_Chromosomes_Fitness.copy()
                 idx = numpy.argsort(tmp, kind='mergesort', axis=0).tolist()[::-1]
                 idx2 = numpy.array(idx).tolist()[0][0:nbrOfParentsToKeep]
-                ParentsToKeep = All_Chromosomes[idx2[0]]
+                ParentsToKeep = []
+                for i in range(len(idx2)):
+                    ParentsToKeep.append(All_Chromosomes[idx2[i]])
 
                 tmp = Chromosomes_Fitness.copy()
                 idx = numpy.argsort(tmp, kind='mergesort', axis=0).tolist()[::-1]
@@ -149,12 +151,18 @@ def MoveCars(env, nbrOfTimeStepsToTimeout, GA, dt, sensor, car, num, smallXYVari
                     Current_Chromosomes.append(Chromosomes[idx2[i]])
                     Current_Fitness.append(Chromosomes_Fitness[idx2[i]])
 
+                Chromosomes_Childs =  []
                 Chromosomes_Childs = ApplyGA(GA, Current_Chromosomes, Current_Fitness)
-                Chromosomes = [ParentsToKeep, Chromosomes_Childs]
+                Chromosomes = []
+                for i in range(len(ParentsToKeep)):
+                    Chromosomes.append(ParentsToKeep[i])
+                for i in range(len(Chromosomes_Childs)):
+                    Chromosomes.append(Chromosomes_Childs[i])
 
                 Chromosome_ids = 1
                 Generation_ids = Generation_ids + 1
-                Chromosomes_Fitness = 0 * Chromosomes_Fitness
+                for i in range(len(Chromosomes_Fitness)):
+                    Chromosomes_Fitness[i]= 0
                 BestFitnessChromoID = 1
         current_chromosome = Chromosomes[Chromosome_ids]
 
