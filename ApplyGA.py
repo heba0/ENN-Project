@@ -15,6 +15,7 @@ def ApplyGA(GA, Chromosomes, Chromosomes_Fitness):  # Because number of chromoso
 
     # Selection
     if (GA.selection_option == 0):  # Tournament
+        #Random Indices
         T = rand(smallerPopulationSize, GA.tournament_size) * (
                     smallerPopulationSize - 1) + 1  # Tournaments(Random from 1 to smallerPopulationSize)
         T = numpy.matrix(T).tolist()
@@ -25,7 +26,7 @@ def ApplyGA(GA, Chromosomes, Chromosomes_Fitness):  # Because number of chromoso
                 T[k][i] = round(T[k][i])% len(Chromosomes_Fitness)
                 l.append(Chromosomes_Fitness[T[k][i]])
             x.append(l)
-        tmp = (numpy.array(x)).max(1)
+        tmp = (numpy.array(x)).max(1)  #Chooses highest fitness
         tmp = tmp.tolist()
         idx = []
         for i in range(len(tmp)):
@@ -34,7 +35,8 @@ def ApplyGA(GA, Chromosomes, Chromosomes_Fitness):  # Because number of chromoso
         WinnersIdx = []  # Winners Indeces
         for i in range(len(idx)):
             WinnersIdx.append(T[i][idx[i]])
-    elif (GA.selection_option == 1):  # Truncation
+    # Truncation
+    elif (GA.selection_option == 1):  
         tmp = Chromosomes_Fitness.copy()
         V = numpy.argsort(tmp, kind='mergesort', axis=0).tolist()[::-1]
         nbrOfSelections = round(smallerPopulationSize * GA.truncation_percentage / 100)  # Number of selected chromosomes
@@ -51,6 +53,7 @@ def ApplyGA(GA, Chromosomes, Chromosomes_Fitness):  # Because number of chromoso
         all_parents.append(Chromosomes[WinnersIdx[i]])
     x = rand(int(smallerPopulationSize / 2), 1)
     x = x.tolist()
+    #Divides population into 2 halves
     first_parents = []
     for i in range(len(x)):
         for j in range(len(x[i])):
@@ -58,12 +61,16 @@ def ApplyGA(GA, Chromosomes, Chromosomes_Fitness):  # Because number of chromoso
             first_parents.append(all_parents[x[i][j]])  # Random smallerPopulationSize / 2 Parents
     x = rand(int(smallerPopulationSize / 2), 1)
     x = x.tolist()
+    
     second_parents = []
     for i in range(len(x)):
         for j in range(len(x[i])):
             x[i][j] = round(x[i][j] * (smallerPopulationSize - 1) + 1) % len(x[i])
             second_parents.append(all_parents[x[i][j]])  # Random smallerPopulationSize / 2 Parents
+    #To know which parts of the chrosmosomes come from first parent, and which comes from second parent
+    #Has the how much we will take from the first parent
     references_matrix = []
+    #Initialize children with zeroes
     for j in range(int(smallerPopulationSize / 2)):
         l = []
         for i in range(GA.chromosomeLength):
@@ -92,6 +99,7 @@ def ApplyGA(GA, Chromosomes, Chromosomes_Fitness):  # Because number of chromoso
                 l.append(0)
         idx.append(l)
 
+    #Childs 1 has mostly chromosomes from 1st parent and Childs2 from second parent
     Chromosomes_Childs1 = []
     Chromosomes_Childs2 = []
     for i in range(len(first_parents)):
@@ -102,6 +110,7 @@ def ApplyGA(GA, Chromosomes, Chromosomes_Fitness):  # Because number of chromoso
             l2.append(0)
         Chromosomes_Childs1.append(l)
         Chromosomes_Childs2.append(l2)
+        
     # Do actual corssover
     for i in range(len(Chromosomes_Childs1)):
         for j in range(len(Chromosomes_Childs1[i])):
